@@ -1,12 +1,16 @@
 package com.apirest.apireststarwar.controllers;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,9 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apirest.apireststarwar.document.Planetas;
+import com.apirest.apireststarwar.event.RecursoCriadoEvent;
+import com.apirest.apireststarwar.repository.PlanetaRepository;
 import com.apirest.apireststarwar.responses.Response;
 import com.apirest.apireststarwar.services.PlanetaService;
-
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,11 +44,29 @@ public class PlanetaController {
 	private PlanetaService planetaService;
 	
 	
+	//@Autowired
+	PlanetaRepository planetaRepository;
 
-	//private static final String SWAPI_URL="https://swapi.co/api/planets/?search=";
+	@Autowired
+	private ApplicationEventPublisher publisher;
+	
+	
+	@PostMapping("/planetasApi")
+	@ApiOperation(value="Retorna a quantidade de aparições do Planeta, Buscando pela API")
+	
+	public ResponseEntity<Planetas> savePlaneta(@Valid @RequestBody Planetas planeta, HttpServletResponse response) {
+
+		Planetas planetaSalvo = planetaService.criarPlaneta(planeta);
+		if (planetaSalvo != null) {
+			publisher.publishEvent(new RecursoCriadoEvent(this, response, planeta.getId()));
+			return ResponseEntity.status(HttpStatus.CREATED).body(planetaSalvo);
+		} else {
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+		}
+
+	}
 	
 		
-	
 	@GetMapping("/planetas")
 	@ApiOperation(value="Retorna uma lista de Planetas")
 	public ResponseEntity<Response<List<Planetas>>>listarTodos(){

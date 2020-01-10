@@ -10,7 +10,6 @@ import com.apirest.apireststarwar.document.Planetas;
 public interface PlanetaRepository extends MongoRepository<Planetas, String> {
 	
 	List<Planetas> findByNomeContaining(String nome);
-	Optional<Planetas> findById(String id);
 
 
 }

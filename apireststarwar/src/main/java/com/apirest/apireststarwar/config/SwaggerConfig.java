@@ -36,7 +36,7 @@ public class SwaggerConfig {
                 "API REST de Crud Planetas starWar.",
                 "1.0",
                 "Terms of Service",
-                new Contact("Pedro Neri", "https://www.youtube.com/pedroneri",
+                new Contact("Pedro Neri", "https://github.com/PPNeri/apiStarWar",
                         "pedroneriti@gmail.com"),
                 "Apache License Version 2.0",
                 "https://www.apache.org/licesen.html", new ArrayList<VendorExtension>()
